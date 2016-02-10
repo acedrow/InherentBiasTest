@@ -29,8 +29,12 @@ public class DisplayImage {
 	JPanel panel;
 	Timer timer;
 
+	char keyChar;
+
+	boolean waitingForAction = false;
 	boolean keyPressed = false;
 	boolean timeBoo = false;
+	boolean firstTime = true;
 
 	/*
 	 * 2-ARG CONSTRUCTOR
@@ -113,34 +117,76 @@ public class DisplayImage {
 	 */
 	private void onKeyTyped(KeyEvent event) {
 
-		char keyChar = event.getKeyChar();
+		keyChar = event.getKeyChar();
 
+		// Boolean used to make sure keyChar is treated as atomic for purposes
+		// of
+		// waitOnAction completing everything it needs to
+		// i.e. only the first keypress of A or L in the 500ms window is logged
 		if (!keyPressed) {
+			// if a or l (the only inputs for this project)
+			// is pressed:
 			if (keyChar == 'a' || keyChar == 'l') {
-				keyPressed = true;
-				System.out.println("Key pressed: " + keyChar);
-				timer.logTime();
-				charVector.add(keyChar);
 
+				// if it's our first time running (i.e. we need to skip the wait
+				// screen,
+				// ONLY CHANGE THIS VARIABLE ONCE.
+				if (firstTime) {
+					firstTime = false;
+					synchronized (this) {
+						notifyAll();
+					}
+				}
+				if (waitingForAction) {
+
+					keyPressed = true;
+					System.out.println("Key pressed: " + keyChar);
+				}
 			}
-
 		}
+
 	}
 
+	/*
+	 * Called from driver, waits for either time (500 ms) to run out, or for a
+	 * key to be pressed If a timeout occurs, logs 9999 as the time, and null as
+	 * the key, else if a key is pressed, log key and time, then notify Driver
+	 * which will call back to display to log
+	 * 
+	 * cleans up afterwards: resets timeboo and keyboo resets timer (necessary?)
+	 */
+
 	public void waitForAction() {
+		populateFrame(0);
+		waitingForAction = true;
 		timer.startSnapShot();
-		while (timer.getCurrentTime() < 500) {
-			timeBoo = true;
+
+		while (true) {
+			if (timer.getCurrentTime() > 500) {
+				timer.logTime(9999);
+				charVector.add(null);
+				break;
+
+			}
+			if (keyPressed) {
+				timer.logTime();
+				charVector.add(keyChar);
+				break;
+			}
 		}
 
-		if (!keyPressed) {
-			charVector.add(null);
-			timer.logTime(9999);
-		}
+		timer.reset();
 		resetBooleans();
-		synchronized (this) {
-			notifyAll();
+	}
+
+	public void waitTwoHundred(int image) {
+		clearFrame();
+		populateFrame(image);
+		timer.startSnapShot();
+		while (timer.getCurrentTime() < 200) {
+
 		}
+		timer.reset();
 	}
 
 	public Vector<Character> getCharVector() {
@@ -148,7 +194,7 @@ public class DisplayImage {
 	}
 
 	void resetBooleans() {
+		waitingForAction = false;
 		keyPressed = false;
-		timeBoo = false;
 	}
 }

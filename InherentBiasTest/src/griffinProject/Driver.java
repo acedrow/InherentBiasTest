@@ -40,8 +40,14 @@ public class Driver {
 		// it loops once for each pair of images.
 
 		display.populateFrame(0);
+		
 		synchronized (display) {
 			try {
+				
+				/*
+				 * 2/9 - WORKING HERE - NEED TO RESOLVE THIS WAIT IN DISPLAYIMAGE
+				 */
+				
 				System.out.println("waiting on keypress");
 				display.wait();
 			} catch (InterruptedException e) {
@@ -52,33 +58,20 @@ public class Driver {
 
 		for (int i = 1; i <= numImages; i += 2) {
 			
-			display.populateFrame(i);
-			timer.startSnapShot();
-			while (timer.getCurrentTime() < 200) {
-
-			}
-			timer.reset();
-
-			display.populateFrame(i + 1);
-			timer.startSnapShot();
-			while (timer.getCurrentTime() < 200) {
-
-			}
-			timer.reset();
-			
-			display.clearFrame();
-			synchronized (display) {
-				try {
-					display.waitForAction();
-					display.wait();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-
+			display.waitTwoHundred(i);
+			display.waitTwoHundred(i+1);
+			display.waitForAction();
 		
+			
+//			try {
+//				display.waitForAction();
+//				display.wait();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			
+			
 		}
 
 		Logger logger = new Logger(imageVector, display.getCharVector(), timer);
