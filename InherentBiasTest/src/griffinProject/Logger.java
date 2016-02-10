@@ -19,7 +19,7 @@ public class Logger {
 		charVector = cVect;
 		timer = t;
 		stringVector = new Vector<String>();
-		stringVector.add("Left-Hand Image:,Right-Hand Image:,Image Chosen:,Reaction Time(ms):");
+		stringVector.add("First Image,Second Image:,Image Chosen:,Reaction Time(ms):");
 	}
 
 	/*
