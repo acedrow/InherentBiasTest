@@ -32,22 +32,13 @@ public class Driver {
 		imageVector = packer.pack();
 		packer.randomize(imageVector);
 
-		Timer timer = new Timer();
-
 		display = new DisplayImage(numImages, imageVector);
 
-		// for loop to iterate number of times = numImages/2
-		// it loops once for each pair of images.
-
+		//shows our waitscreen, and waits for a keypress to start the test
 		display.populateFrame(0);
-		
+
 		synchronized (display) {
 			try {
-				
-				/*
-				 * 2/9 - WORKING HERE - NEED TO RESOLVE THIS WAIT IN DISPLAYIMAGE
-				 */
-				
 				System.out.println("waiting on keypress");
 				display.wait();
 			} catch (InterruptedException e) {
@@ -57,24 +48,22 @@ public class Driver {
 		}
 
 		for (int i = 1; i <= numImages; i += 2) {
-			
+
 			display.waitTwoHundred(i);
-			display.waitTwoHundred(i+1);
+			display.waitTwoHundred(i + 1);
 			display.waitForAction();
-		
-			
-//			try {
-//				display.waitForAction();
-//				display.wait();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			
-			
+
+			// try {
+			// display.waitForAction();
+			// display.wait();
+			// } catch (InterruptedException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
+
 		}
 
-		Logger logger = new Logger(imageVector, display.getCharVector(), timer);
+		Logger logger = new Logger(imageVector, display.getCharVector(), display.getTimer());
 		logger.generateLog(logPath);
 
 		System.exit(0);

@@ -35,6 +35,7 @@ public class DisplayImage {
 	boolean keyPressed = false;
 	boolean timeBoo = false;
 	boolean firstTime = true;
+	long timePressed = 0;
 
 	/*
 	 * 2-ARG CONSTRUCTOR
@@ -117,7 +118,7 @@ public class DisplayImage {
 	 */
 	private void onKeyTyped(KeyEvent event) {
 
-		keyChar = event.getKeyChar();
+		char tempKey = event.getKeyChar();
 
 		// Boolean used to make sure keyChar is treated as atomic for purposes
 		// of
@@ -126,7 +127,7 @@ public class DisplayImage {
 		if (!keyPressed) {
 			// if a or l (the only inputs for this project)
 			// is pressed:
-			if (keyChar == 'a' || keyChar == 'l') {
+			if (tempKey == 'a' || tempKey == 'l') {
 
 				// if it's our first time running (i.e. we need to skip the wait
 				// screen,
@@ -138,9 +139,13 @@ public class DisplayImage {
 					}
 				}
 				if (waitingForAction) {
+					keyChar = tempKey;
 
 					keyPressed = true;
+					timePressed = System.currentTimeMillis();
 					System.out.println("Key pressed: " + keyChar);
+					
+
 				}
 			}
 		}
@@ -157,24 +162,28 @@ public class DisplayImage {
 	 */
 
 	public void waitForAction() {
-		populateFrame(0);
+		clearFrame();
 		waitingForAction = true;
+		
 		timer.startSnapShot();
+		while (timer.getCurrentTime() < 500) {
 
-		while (true) {
-			if (timer.getCurrentTime() > 500) {
-				timer.logTime(9999);
-				charVector.add(null);
-				break;
-
-			}
-			if (keyPressed) {
-				timer.logTime();
-				charVector.add(keyChar);
-				break;
-			}
 		}
-
+		
+		waitingForAction = false;
+		
+		if(keyPressed){
+			System.out.println("logged key: " + keyChar);
+			charVector.add(keyChar);
+			timer.logTime(timePressed, true);
+		}
+		
+		else{
+			System.out.println("logged key: null");
+			charVector.add(null);
+			timer.logTime(9999, false);
+		}
+		
 		timer.reset();
 		resetBooleans();
 	}
@@ -196,5 +205,9 @@ public class DisplayImage {
 	void resetBooleans() {
 		waitingForAction = false;
 		keyPressed = false;
+	}
+	
+	public Timer getTimer(){
+		return timer;
 	}
 }

@@ -22,15 +22,23 @@ public class Timer {
 		time1 = System.currentTimeMillis();
 	}
 
-	public void logTime(){
+	public void logTime() {
 		time2 = System.currentTimeMillis();
 		long difference = time2 - time1;
 		timeLog.add(difference);
 	}
-	
-	public void logTime(long time){
-		timeLog.add(time);
+
+	public void logTime(long time, boolean keypressed) {
+		long difference = 9999;
+		if (keypressed) {
+			 difference = time - time1;
+		}
+		
+		timeLog.add(difference);
+		System.out.println("logged time: " + difference);
 	}
+
+	
 
 	public void reset() {
 		time1 = 0L;
