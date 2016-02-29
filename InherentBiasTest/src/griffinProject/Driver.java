@@ -16,26 +16,52 @@ public class Driver {
 	// Test filepath:
 	// C:/Users/Linden/Desktop/TestImages/
 
-	static Vector<ImagePack> imageVector;
-	static String imagePath = "C:/Users/Linden/Desktop/griffinProgram/images/";
-	static String descriptionsPath = "C:/Users/Linden/Desktop/griffinProgram/descriptions.txt";
-	static String logPath = "C:/Users/Linden/Desktop/griffinProgram/logs";
-	static int numImages;
+	static Vector<ImagePack> faceVector;
+	static Vector<ImagePack> objectVector;
+	static Vector<String> history;
+
+	static String mainPath = "C:/Users/Linden/Desktop/griffinProgram/";
+	static String facePath = "faces/";
+	static String objectPath = "objects/";
+	static String faceDescriptions = "faceDescriptions.txt";
+	static String objectDescriptons = "objectDescriptons.txt";
+	static String logPath = "logs/";
+
+	static int numFaces;
+	static int numObjects;
+	static int timeToRun = 10000; // in ms: 300000 ms = 5 minutes
+
 	static DisplayImage display;
 
 	public static void main(String[] args) {
+		// Concatenate description paths to absolute paths.
+		facePath = mainPath + facePath;
+		objectPath = mainPath + objectPath;
+		logPath = mainPath + logPath;
+		faceDescriptions = mainPath + faceDescriptions;
+		objectDescriptons = mainPath + objectDescriptons;
 
-		File filePath = (new File(imagePath));
-		numImages = (filePath.listFiles().length) - 1;
+		// sets correct numbers for how many face and object images we have.
+		File filePath = (new File(facePath));
+		numFaces = (filePath.listFiles().length);
 
-		ImagePacker packer = new ImagePacker(numImages, imagePath, descriptionsPath);
-		imageVector = packer.pack();
-		packer.randomize(imageVector);
+		filePath = (new File(objectPath));
+		numObjects = (filePath.listFiles().length);
 
-		display = new DisplayImage(numImages, imageVector);
+		// pairs images with descriptions, puts them in correct vectors.
+		ImagePacker packer = new ImagePacker(numFaces, facePath, faceDescriptions);
+		faceVector = packer.pack();
 
-		//shows our waitscreen, and waits for a keypress to start the test
-		display.populateFrame(0);
+		packer = new ImagePacker(numObjects, objectPath, objectDescriptons);
+		objectVector = packer.pack();
+		
+		history = new Vector<String>();
+
+		display = new DisplayImage();
+
+		// shows our waitscreen, and waits for a keypress to start the test
+		ImagePack waitScreen = packer.packOne("C:/Users/Linden/Desktop/griffinProgram/0.jpg", "waitScreen");
+		display.populateFrame(waitScreen);
 
 		synchronized (display) {
 			try {
@@ -46,30 +72,27 @@ public class Driver {
 				e.printStackTrace();
 			}
 		}
+		Random random = new Random();
+		Timer timer = new Timer();
+		timer.startSnapShot();
 
-		for (int i = 1; i <= numImages; i += 2) {
+		// Our main loop for the test
+		while (timer.getCurrentTime() < timeToRun) {
+			int faceNum = random.nextInt(numFaces);
+			int objectNum = random.nextInt(numObjects);
 
-			display.waitTwoHundred(i);
-			display.waitTwoHundred(i + 1);
+			display.waitTwoHundred(faceVector.get(faceNum));
+			display.waitTwoHundred(objectVector.get(objectNum));
 			display.waitForAction();
-
-			// try {
-			// display.waitForAction();
-			// display.wait();
-			// } catch (InterruptedException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
+			
+			history.add(faceVector.get(faceNum).getDescription());
+			history.add(objectVector.get(objectNum).getDescription());
 
 		}
 
-		Logger logger = new Logger(imageVector, display.getCharVector(), display.getTimer());
+		Logger logger = new Logger(history, display.getCharVector(), display.getTimer());
 		logger.generateLog(logPath);
 
 		System.exit(0);
-	}
-
-	public String getDescriptionsPath() {
-		return descriptionsPath;
 	}
 }

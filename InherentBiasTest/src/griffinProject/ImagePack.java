@@ -9,11 +9,13 @@ import javax.swing.JLabel;
 public class ImagePack {
 	JLabel label;
 	String description;
-	char side;
+	int imageNumber;
+
 	
 	public ImagePack(JLabel lbl, String desc){
 		label = lbl;
 		description = desc;
+	
 	}
 	
 	public JLabel getLabel(){
@@ -24,12 +26,8 @@ public class ImagePack {
 		return description;
 	}
 	
-	public char getSide(){
-		return side;
+	public int getImageNumber(){
+		return imageNumber;
 	}
 	
-	public void setSide(char c){
-		side = c;
-	}
-
 }

@@ -9,13 +9,13 @@ import java.util.Date;
 import java.util.Vector;
 
 public class Logger {
-	Vector<ImagePack> imageVector;
+	Vector<String> history;
 	Vector<String> stringVector;
 	Vector<Character> charVector;
 	Timer timer;
 
-	public Logger(Vector<ImagePack> iVect, Vector<Character> cVect, Timer t) {
-		imageVector = iVect;
+	public Logger(Vector<String> h, Vector<Character> cVect, Timer t) {
+		history = h;
 		charVector = cVect;
 		timer = t;
 		stringVector = new Vector<String>();
@@ -27,13 +27,11 @@ public class Logger {
 	 * .csv to export. [0] will always be the header row.
 	 */
 	public void generateLog(String logPath) {
-
-		for (int i = 1; i < imageVector.size(); i += 2) {
-			String firstDescription = imageVector.get(i).getDescription();
-			String secondDescription = imageVector.get(i + 1).getDescription();
-			
-			firstDescription = firstDescription.substring(2, firstDescription.length());
-			secondDescription = secondDescription.substring(2, secondDescription.length());
+		
+		for (int i = 0; i < history.size(); i += 2) {
+	
+			String firstDescription = history.get(i);
+			String secondDescription = history.get(i+1);
 			
 			String imageChosen;
 			
@@ -45,6 +43,7 @@ public class Logger {
 			} else {
 				imageChosen = "second";
 			}
+			
 			long reactionTime = timer.getFinalTime(i / 2);
 
 			stringVector.add(firstDescription + "," + secondDescription + "," + imageChosen + "," + reactionTime);

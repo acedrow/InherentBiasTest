@@ -28,11 +28,18 @@ public class ImagePacker {
 
 	Vector<ImagePack> imageVector = new Vector<ImagePack>();
 	Vector<String> description = new Vector<String>();
+	
+	int imageSize;
 
 	public ImagePacker(int inum, String ipath, String dpath) {
 		imagePath = ipath;
 		numImages = inum;
 		descriptionsPath = dpath;
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int screenWidth = (int) screenSize.getWidth();
+		int screenHeight = (int) screenSize.getHeight() - 50;
+		imageSize = screenWidth/2 - (screenWidth/10);
 	}
 
 	public Vector<ImagePack> pack() {
@@ -56,7 +63,7 @@ public class ImagePacker {
 			e.printStackTrace();
 		}
 
-		for (int i = 0; i <= numImages; i++) {
+		for (int i = 1; i <= numImages; i++) {
 			String specificImagePath = (imagePath + i + ".jpg");
 			BufferedImage img = null;
 
@@ -66,11 +73,6 @@ public class ImagePacker {
 				e1.printStackTrace();
 			}
 			
-			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			int screenWidth = (int) screenSize.getWidth();
-			int screenHeight = (int) screenSize.getHeight() - 50;
-			int imageSize = screenWidth/2 - (screenWidth/10);
-			
 			Image scaledImg = img.getScaledInstance(imageSize, imageSize, Image.SCALE_SMOOTH);
 			ImageIcon icon = new ImageIcon(scaledImg);
 
@@ -78,11 +80,32 @@ public class ImagePacker {
 			lbl.setIcon(icon);
 			lbl.setPreferredSize(new Dimension(imageSize, imageSize));
 
-			ImagePack imagePack = new ImagePack(lbl, description.get(i));
+			ImagePack imagePack = new ImagePack(lbl, description.get(i-1));
 
 			imageVector.add(imagePack);
 		}
 		return imageVector;
+	}
+	
+	public ImagePack packOne(String imagePath, String description) {
+		BufferedImage img = null;
+
+		try {
+			img = ImageIO.read(new File(imagePath));
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		Image scaledImg = img.getScaledInstance(imageSize, imageSize, Image.SCALE_SMOOTH);
+		ImageIcon icon = new ImageIcon(scaledImg);
+
+		JLabel lbl = new JLabel();
+		lbl.setIcon(icon);
+		lbl.setPreferredSize(new Dimension(imageSize, imageSize));
+
+		ImagePack imagePack = new ImagePack(lbl, description);
+		return imagePack;
 	}
 
 	/*

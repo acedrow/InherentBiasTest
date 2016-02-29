@@ -37,17 +37,10 @@ public class DisplayImage {
 	boolean firstTime = true;
 	long timePressed = 0;
 
-	/*
-	 * 2-ARG CONSTRUCTOR
-	 * 
-	 * Instantiates our JFrame, labelVector, and keyListener fields Performs
-	 * image I/O and stores JLabels in the labelVector, ready to be
-	 * added/removed from the frame
-	 * 
-	 */
-	public DisplayImage(int numImages, Vector<ImagePack> iVect) {
 
-		imageVector = iVect;
+	public DisplayImage() {
+
+
 		charVector = new Vector<Character>();
 		timer = new Timer();
 
@@ -63,8 +56,6 @@ public class DisplayImage {
 		panel = new JPanel();
 
 		frame.add(panel);
-
-		panel.add(imageVector.get(0).getLabel());
 
 		listener = new KeyListener() {
 			public void keyPressed(KeyEvent e) {
@@ -83,39 +74,24 @@ public class DisplayImage {
 		frame.setVisible(true);
 	}
 
-	/*
-	 * Gets Jlabels from labelVector and adds them to the JFrame field. Removes
-	 * old labels if necessary
-	 * 
-	 * ARGUMENTS: imageNum - specifies the current image to add This should
-	 * usually be an odd number, e.g. for the first add, imageNum == 1, 1.jpg
-	 * and 2.jpg will be added.
-	 * 
-	 * imageNum = 0 is a special case that will put up the
-	 * "Press enter to begin image" stored in labelVector[0]
-	 * 
-	 */
-	public void populateFrame(int imageNum) {
+	
+	public void populateFrame(ImagePack pack) {
 
 		panel.removeAll();
 
-		panel.add(imageVector.get(imageNum).getLabel());
+		panel.add(pack.getLabel());
 
 		panel.revalidate();
 		panel.repaint();
 
 	}
-
+	
 	public void clearFrame() {
 		panel.removeAll();
 		panel.revalidate();
 		panel.repaint();
 	}
 
-	/*
-	 * Method to be called whenever a keyTyped event is triggered Will notify
-	 * driver...
-	 */
 	private void onKeyTyped(KeyEvent event) {
 
 		char tempKey = event.getKeyChar();
@@ -188,9 +164,9 @@ public class DisplayImage {
 		resetBooleans();
 	}
 
-	public void waitTwoHundred(int image) {
+	public void waitTwoHundred(ImagePack pack) {
 		clearFrame();
-		populateFrame(image);
+		populateFrame(pack);
 		timer.startSnapShot();
 		while (timer.getCurrentTime() < 200) {
 
