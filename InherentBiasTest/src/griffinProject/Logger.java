@@ -39,9 +39,9 @@ public class Logger {
 				imageChosen = "neither";
 			}
 			else if (charVector.get(i / 2).equals('a')) {
-				imageChosen = "first";
+				imageChosen = "drug";
 			} else {
-				imageChosen = "second";
+				imageChosen = "object";
 			}
 			
 			long reactionTime = timer.getFinalTime(i / 2);

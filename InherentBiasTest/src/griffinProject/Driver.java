@@ -29,7 +29,7 @@ public class Driver {
 
 	static int numFaces;
 	static int numObjects;
-	static int timeToRun = 10000; // in ms: 300000 ms = 5 minutes
+	static int timeToRun = 180000; // in ms: 300000 ms = 5 minutes
 
 	static DisplayImage display;
 
@@ -60,7 +60,7 @@ public class Driver {
 		display = new DisplayImage();
 
 		// shows our waitscreen, and waits for a keypress to start the test
-		ImagePack waitScreen = packer.packOne("C:/Users/Linden/Desktop/griffinProgram/0.jpg", "waitScreen");
+		ImagePack waitScreen = packer.packOne(mainPath + "0.jpg", "waitScreen");
 		display.populateFrame(waitScreen);
 
 		synchronized (display) {
